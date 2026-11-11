@@ -69,6 +69,7 @@ function CustomVideoPlayer({ src, poster }) {
 export default function App() {
   const [isEnvelopeOpened, setIsEnvelopeOpened] = useState(false);
   const [showMain, setShowMain] = useState(false);
+  const musicRef = useRef(null);
 
   const PHOTOS = [
     { id: 1, src: '/images/photo3.jpg', classes: 'absolute top-[16%] left-[4%] sm:left-[8%] w-[45%] sm:w-[32%]', rotate: -8 },
@@ -83,8 +84,18 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleEnvelopeOpen = () => {
+    if (isEnvelopeOpened) return;
+
+    musicRef.current?.play().catch((error) => {
+      console.error('Unable to play the background music:', error);
+    });
+    setIsEnvelopeOpened(true);
+  };
+
   return (
     <div className={`w-full bg-[#8c657a] text-white ${showMain ? 'overflow-y-auto' : 'h-screen overflow-hidden'}`}>
+      <audio ref={musicRef} src="/images/music.mp3" preload="auto" />
       
       {/* ================= SECTION 1: THE ENVELOPE ================= */}
       <AnimatePresence>
@@ -98,14 +109,14 @@ export default function App() {
             <motion.p
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-10 sm:mb-12 -rotate-6 font-hand text-3xl sm:text-4xl text-[#f3e3ce] relative right-12 sm:right-16 drop-shadow-md z-30"
+              className="mb-2 -rotate-6 font-hand text-3xl sm:text-4xl text-[#f3e3ce] relative right-12 sm:right-16 drop-shadow-md z-30"
             >
               open me!
             </motion.p>
 
             <div 
               className="relative flex items-center justify-center w-full max-w-sm cursor-pointer mt-6"
-              onClick={() => setIsEnvelopeOpened(true)}
+              onClick={handleEnvelopeOpen}
             >
               <motion.img 
                 src="/images/envelope-closed.png"
@@ -122,6 +133,10 @@ export default function App() {
                 whileTap={!isEnvelopeOpened ? { scale: 0.95 } : {}}
               />
             </div>
+
+            <p className="mt-4 font-serif text-sm tracking-widest text-[#f3e3ce] drop-shadow-md">
+              11.11.2026
+            </p>
           </motion.section>
         )}
       </AnimatePresence>
